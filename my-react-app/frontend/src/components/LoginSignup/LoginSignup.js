@@ -1,91 +1,3 @@
-// import React, { act, useState } from "react";
-// import axios from "axios";
-// import "./LoginSignup.css";
-// import user_icon from "../Assets/person.png";
-// import email_icon from "../Assets/email.png";
-// import password_icon from "../Assets/password.png";
-
-
-// function LoginSignup({ onLoginSuccess }) {
-//   // const [email, setEmail] = useState("");
-//   // const [password, setPassword] = useState("");
-//   // const [message, setMessage] = useState("");
-
-//   // const handleSubmit = async (e) => {
-//   //   e.preventDefault();
-//   //   try {
-//   //     const response = await axios.post("http://localhost:5000/login", {
-//   //       email,
-//   //       password,
-//   //     });
-//   //     console.log(response);
-//   //     setMessage(response.data.message || "Login successful!");
-//   //     onLoginSuccess();  // Call the function to indicate successful login
-//   //   } catch (error) {
-//   //     setMessage(error.response?.data?.message || "An error occurred.");
-//   //   }
-//   // };
-
-
-  
-//   const [action,setAction] = useState("Login");
-
-//   return (
-//       <div className="container">
-//         <div className="header">
-//           <div className="text">{action}</div>
-//           <div className="underline"></div>
-//         </div>
-//         <div className="inputs">
-//           {action==="Login"?<div></div>:
-//           <div className="input">
-//             <img src={user_icon} alt=""/>
-//             <input type="text" placeholder="Username"/>
-//           </div>}
-//           <div className="input">
-//             <img src={email_icon} alt=""/>
-//             <input type="email" placeholder="Email"/>
-//           </div>
-//           <div className="input">
-//             <img src={password_icon} alt=""/>
-//             <input type="password" placeholder="Password"/>
-//           </div>
-//         </div>
-//         {action==="Sign Up"?<div></div>:
-//         <div className="forgot-password">LostPassword? <span>Click Here!</span></div>}
-//         <div className="submit-container">
-//           <div className={action==="Login"?"submit gray":"submit"} onClick={()=>setAction("Sign Up")}>Sign Up</div>
-//           <div className={action==="Sign Up"?"submit gray":"submit"} onClick={()=>setAction("Login")}>Login</div>
-//         </div>
-//       </div>
-
-//     // <div className="form-container">
-//     //   <h2>Login</h2>
-//     //   <form onSubmit={handleSubmit}>
-//     //     <input
-//     //       type="email"
-//     //       placeholder="Email"
-//     //       value={email}
-//     //       onChange={(e) => setEmail(e.target.value)}
-//     //       required
-//     //     />
-//     //     <input
-//     //       type="password"
-//     //       placeholder="Password"
-//     //       value={password}
-//     //       onChange={(e) => setPassword(e.target.value)}
-//     //       required
-//     //     />
-//     //     <button type="submit">Login</button>
-//     //   </form>
-//     //   <p>{message}</p>
-//     // </div>
-//   );
-// }
-
-// export default LoginSignup;
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import "./LoginSignup.css";
@@ -195,7 +107,7 @@ function LoginSignup({ onLoginSuccess }) {
       <div className="forgot-password">
       {message && <div className="message">{message}</div>}
       </div>
-      
+
       {action === "Login" ? (
         <div className="forgot-password">
           Lost Password? <span>Click Here!</span>
@@ -228,20 +140,7 @@ function LoginSignup({ onLoginSuccess }) {
         )}
       </div>
 
-      {/* <div className="toggle-action">
-        <div
-          className={action === "Login" ? "submit gray" : "submit"}
-          onClick={() => setAction("Sign Up")}
-        >
-          Sign Up
-        </div>
-        <div
-          className={action === "Sign Up" ? "submit gray" : "submit"}
-          onClick={() => setAction("Login")}
-        >
-          Login
-        </div> */}
-      {/* </div> */}
+
     </div>
   );
 }
