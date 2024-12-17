@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./LoginSignup.css";
 import user_icon from "../Assets/person.png";
 import email_icon from "../Assets/email.png";
@@ -11,6 +12,7 @@ function LoginSignup({ onLoginSuccess }) {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState(""); // For sign-up only
   const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -21,25 +23,35 @@ function LoginSignup({ onLoginSuccess }) {
       });
       console.log(response);
       setMessage(response.data.message || "Login successful!");
-      onLoginSuccess(); // Call the parent function after successful login
+      // Check if login was successful
+      if (response.data.success) {
+        console.log("Login successful, navigating to /products...");
+        navigate("/api/images"); // Redirect to the products page
+        if (onLoginSuccess) {
+          onLoginSuccess(); // Call the parent callback if provided
+        }
+      } else {
+        console.log("Login failed. Message:", response.data.message);
+        setMessage(response.data.message || "Login failed. Please try again.");
+      }
     } catch (error) {
-      // Log the full error to help with debugging
-    console.log('Error object:', error);
+      console.error("Error during login:", error); // Log the full error
 
-    if (error.response) {
-      // If there is a response from the server, extract the message
-      console.log('Response data:', error.response.data);
-      setMessage(error.response.data.message || "An error occurred.");
-    } else if (error.request) {
-      // No response from the server
-      console.log('No response was received:', error.request);
-      setMessage("No response from the server. Please try again later.");
-    } else {
-      // Other errors (e.g., something else went wrong)
-      console.log('Error message:', error.message);
-      setMessage("Unexpected error occurred.");
+      // Handle errors based on their type
+      if (error.response) {
+        // Server responded with a status outside the 2xx range
+        console.log("Response error data:", error.response.data);
+        setMessage(error.response.data.message || "An error occurred.");
+      } else if (error.request) {
+        // No response was received from the server
+        console.log("No response received:", error.request);
+        setMessage("No response from the server. Please try again later.");
+      } else {
+        // An unknown error occurred
+        console.log("Error message:", error.message);
+        setMessage("An unexpected error occurred. Please try again.");
+      }
     }
-  }
   };
 
   const handleSignUpSubmit = async (e) => {
@@ -53,16 +65,13 @@ function LoginSignup({ onLoginSuccess }) {
       setMessage(response.data.message || "Signup successful!");
       setAction("Login"); // After successful sign-up, switch to Login view
     } catch (error) {
-      // Check if the error response contains a message
-    if (error.response) {
-      console.log(error);
-      // If there is a response from the server, extract the message
-      setMessage(error.response.data.message || "An error occurred.");
-    } else {
-      // If no response, handle network issues or unexpected errors
-      setMessage("An unexpected error occurred.");
+      if (error.response) {
+        console.log(error);
+        setMessage(error.response.data.message || "An error occurred.");
+      } else {
+        setMessage("An unexpected error occurred.");
+      }
     }
-  }   
   };
 
   return (
@@ -105,7 +114,7 @@ function LoginSignup({ onLoginSuccess }) {
         </div>
       </div>
       <div className="forgot-password">
-      {message && <div className="message">{message}</div>}
+        {message && <div className="message">{message}</div>}
       </div>
 
       {action === "Login" ? (
@@ -119,11 +128,13 @@ function LoginSignup({ onLoginSuccess }) {
           <div className="submit-container">
             <div
               className={action === "Login" ? "submit gray" : "submit"}
-              onClick={() => setAction("Sign Up")}>
+              onClick={() => setAction("Sign Up")}
+            >
               Sign Up
             </div>
             <div className="submit" onClick={handleLoginSubmit}>
-              Login</div>
+              Login
+            </div>
           </div>
         ) : (
           <div className="submit-container">
@@ -139,10 +150,7 @@ function LoginSignup({ onLoginSuccess }) {
           </div>
         )}
       </div>
-
-
-    </div>
-  );
+    </div>);
 }
 
 export default LoginSignup;

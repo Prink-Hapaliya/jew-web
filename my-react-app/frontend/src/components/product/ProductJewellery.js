@@ -1,75 +1,55 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import Pagination from "./Pagination";
+import "./ProductJewellery.css";
 
-function ProductJewellery() {
+const ImageGallery = () => {
   const [images, setImages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const fetchImages = async (page) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/images`);
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        setImages(data.images);
+        setTotalPages(data.pages);
+      } else {
+        console.error("Error fetching images:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Fetch images from the server (replace with the correct API endpoint)
-    axios.get("http://localhost:5000/images")
-      .then(response => {
-        setImages(response.data);
-      })
-      .catch(error => {
-        setMessage("Error loading images.");
-      });
-  }, []);
-
-  const handleSkip = (id) => {
-    setImages(images.filter(image => image.id !== id));
-  };
-
-  const handleSkipAll = () => {
-    setImages([]);
-  };
-
-  const handleEdit = (id) => {
-    // Implement the edit functionality (open a modal or form to edit the image details)
-    console.log("Edit image", id);
-  };
-
-  const handleUpload = async (e) => {
-    const formData = new FormData();
-    for (let file of e.target.files) {
-      formData.append("images", file);
-    }
-
-    try {
-      const response = await axios.post("http://localhost:5000/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setMessage(response.data.message || "Images uploaded successfully!");
-      setImages([...images, ...response.data.images]);
-    } catch (error) {
-      setMessage("Error uploading images.");
-    }
-  };
+    fetchImages(page);
+  }, [page]);
 
   return (
-    <div>
-      <h2>Jewellery Products</h2>
-
-      <input type="file" multiple onChange={handleUpload} />
-      <p>{message}</p>
-
-      <div>
-        <button onClick={handleSkipAll}>Skip All</button>
-        {images.length > 0 ? (
-          images.map((image) => (
-            <div key={image.id}>
-              <img src={image.url} alt={image.name} width="100" />
-              <p>{image.name}</p>
-              <button onClick={() => handleSkip(image.id)}>Skip</button>
-              <button onClick={() => handleEdit(image.id)}>Edit</button>
-            </div>
-          ))
-        ) : (
-          <p>No images to display.</p>
-        )}
-      </div>
+    <div className="gallery-container">
+      <h1>Image Gallery</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <div className="image-grid">
+            {images.map((img, index) => (
+              <div key={index} className="image-card">
+                <img src={img} alt={`Image ${index}`} />
+              </div>
+            ))}
+          </div>
+          <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+        </>
+      )}
     </div>
   );
-}
+};
 
-export default ProductJewellery;
+export default ImageGallery;

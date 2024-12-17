@@ -1,47 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginSignup from "./components/LoginSignup/LoginSignup";
-// import ProductJewellery from "./components/product/ProductJewellery";
-import "./App.css";
+import ProductJewels from "./components/product/ProductJewellery";
+import Upload_data from "./components/product/Upload_data";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true); // Update the state to indicate the user is logged in
-  };
-
   return (
-    <div>
-       <LoginSignup onLoginSuccess={handleLoginSuccess} /> 
-    </div>
-    // <div className="app-container">
-    //   {!isLoggedIn && (
-    //     <>
-    //       <h1>Welcome to Our App</h1>
-    //       <div className="toggle-container">
-    //         <button
-    //           className={isLogin ? "active" : ""}
-    //           onClick={() => setIsLogin(true)}
-    //         >
-    //           Login
-    //         </button>
-    //         <button
-    //           className={!isLogin ? "active" : ""}
-    //           onClick={() => setIsLogin(false)}
-    //         >
-    //           Signup
-    //         </button>
-    //       </div>
-    //     </>
-    //   )}
+    <Router>
+      <Routes>
+        {/* Route for the login and signup page */}
+        <Route path="/" element={< LoginSignup />} />
 
-    //   {isLoggedIn ? (
-    //     <ProductJewellery /> // Show the ProductJewellery component after login
-    //   ) : (
-    //     isLogin ? <Login onLoginSuccess={handleLoginSuccess} /> : <Signup />
-    //   )}
-    // </div>
+        {/* Route for the products page */}
+        <Route path="/api/images" element={< ProductJewels />} />
+        
+        <Route path="/uploads" element={< Upload_data />} />
+      </Routes>
+    </Router>
   );
 }
 
